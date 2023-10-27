@@ -1,0 +1,88 @@
+<?php
+/**
+ * MageINIC
+ * Copyright (C) 2023 MageINIC <support@mageinic.com>
+ *
+ * NOTICE OF LICENSE
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://opensource.org/licenses/gpl-3.0.html.
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category MageINIC
+ * @package MageINIC_ImageFlipper
+ * @copyright Copyright (c) 2023 MageINIC (https://www.mageinic.com/)
+ * @license http://opensource.org/licenses/gpl-3.0.html GNU General Public License,version 3 (GPL-3.0)
+ * @author MageINIC <support@mageinic.com>
+ */
+
+use Magento\Catalog\Model\Product;
+use Magento\Framework\Escaper;
+use Magento\Swatches\Block\Product\Renderer\Listing\Configurable;
+use Magento\Swatches\ViewModel\Product\Renderer\Configurable as ConfigurableViewModel;
+use MageINIC\ImageFlipper\ViewModel\ConfigurableFlipper;
+
+/**
+ * @var $block Configurable;
+ * @var $product Product;
+ * @var $configurableFlipper ConfigurableFlipper;
+ * @var $configurableViewModel ConfigurableViewModel;
+ * @var $escaper Escaper;
+ */
+$product = $block->getProduct();
+if ($product && $product->isAvailable()):
+    $productId = $product->getId();
+    $configurableViewModel = $block->getConfigurableViewModel();
+    $configurableFlipper = $block->getViewModel();
+    ?>
+    <div class="swatch-opt-<?= $escaper->escapeHtmlAttr($productId) ?>"
+         data-role="swatch-option-<?= $escaper->escapeHtmlAttr($productId) ?>">
+    </div>
+    <script type="text/x-magento-init">
+        {
+            "[data-role=swatch-option-<?= $escaper->escapeJs($productId) ?>]": {
+                "Magento_Swatches/js/swatch-renderer": {
+                    "selectorProduct": ".product-item-details",
+                    "onlySwatches": true,
+                    "enableControlLabel": false,
+                    "numberToShow": <?= $escaper->escapeJs($block->getNumberSwatchesPerProduct()) ?>,
+                    "jsonConfig": <?= /* @noEscape */ $block->getJsonConfig() ?>,
+                    "jsonSwatchConfig": <?= /* @noEscape */ $block->getJsonSwatchConfig() ?>,
+                    "mediaCallback": "<?= $escaper->escapeUrl($block->getMediaCallback()) ?>",
+                    "jsonSwatchImageSizeConfig": <?= /* @noEscape */ $block->getJsonSwatchSizeConfig() ?>,
+                    "showTooltip": <?= $escaper->escapeJs($configurableViewModel->getShowSwatchTooltip()) ?>,
+                    "imageFlipper": <?= /* @noEscape */ $configurableFlipper->getImageFlipper($block->getProduct()) ?>,
+                    "productId": <?= $escaper->escapeHtmlAttr($productId) ?>
+                }
+            }
+        }
+    </script>
+    <script>
+        require(["jquery"], function (jQuery) {
+            jQuery(".product-options-wrapper select[id^='attribute']").last().on('change', function () {
+                setTimeout(function () {
+                    simpleId = jQuery("input[name=selected_configurable_option]").val();
+                }, 500);
+            });
+        });
+    </script>
+    <script type="text/x-magento-init">
+        {
+            "[data-role=priceBox][data-price-box=product-id-<?= $escaper->escapeJs($productId) ?>]": {
+                "priceBox": {
+                    "priceConfig": {
+                        "priceFormat": <?= /* @noEscape */ $block->getPriceFormatJson() ?>,
+                        "prices": <?= /* @noEscape */ $block->getPricesJson() ?>
+                    }
+                }
+            }
+        }
+    </script>
+<?php endif; ?>

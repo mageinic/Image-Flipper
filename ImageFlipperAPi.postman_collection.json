@@ -1,0 +1,39 @@
+{
+	"info": {
+		"_postman_id": "21185ecc-105d-44ac-8fa5-7f1d1bfccaae",
+		"name": "ImageFlipperAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "products",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJraWQiOiIxIiwiYWxnIjoiSFMyNTYifQ.eyJ1aWQiOjEsInV0eXBpZCI6MiwiaWF0IjoxNjkyMDE5ODExLCJleHAiOjE2OTIwMjM0MTF9.oYizV-Hce-vigPhJMhruTFymqqpNR5nqP5NmuI7rFTQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseurl}}/rest/V1/products/24-MB02",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"rest",
+						"V1",
+						"products",
+						"24-MB02"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
