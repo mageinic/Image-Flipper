@@ -71,10 +71,10 @@ class AbstractProductList
             if (($flipper_img_name != "no_selection")
                 && ($flipper_img_name != "productno_selection")
                 && (($flipper_img_name != null))) {
-                $image_url = $this->viewModel->getMediaPath() . 'catalog/product' . $flipper_img_name;
+                $image_url = $this->viewModel->getFlipImage($product);
                 $result = $proceed($product);
                 $type = $product->getTypeId();
-                return $result . '<span id="mageinic_flipper_img" style="display:none;"  data-type="' 
+                return $result . '<span id="mageinic_flipper_img" style="display:none;"  data-type="'
                 . $type . '">' . $image_url . '</span>';
             }
         }

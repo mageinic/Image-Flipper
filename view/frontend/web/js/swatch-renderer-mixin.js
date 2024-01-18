@@ -35,7 +35,7 @@ define([
                     productData = this._determineProductData(),
                     mediaCallData,
                     mediaCacheKey,
-                    
+
                     mediaSuccessCallback = function (data) {
 
                         if (!(mediaCacheKey in $widget.options.mediaCache)) {

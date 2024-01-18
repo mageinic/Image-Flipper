@@ -165,7 +165,6 @@ switch ($type = $block->getType()) {
             $canItemsAddToCart = false;
         }
         break;
-
     case 'other':
         break;
 }
@@ -325,15 +324,15 @@ if ($type == 'related' || $type == 'upsell'):
             </div>
         </div>
     </div>
-    <?php if (!$block->isRedirectToCartEnabled() && $_item): ?>
-        <script type="text/x-magento-init">
-            {
-                "[data-role=tocart-form], .form.map.checkout": {
-                    "catalogAddToCart": {
-                        "product_sku": "<?= $escaper->escapeJs($_item->getSku()) ?>"
-                    }
+<?php if (!$block->isRedirectToCartEnabled() && $_item): ?>
+    <script type="text/x-magento-init">
+        {
+            "[data-role=tocart-form], .form.map.checkout": {
+                "catalogAddToCart": {
+                    "product_sku": "<?= $escaper->escapeJs($_item->getSku()) ?>"
                 }
             }
-        </script>
-    <?php endif; ?>
+        }
+    </script>
+<?php endif; ?>
 <?php endif; ?>

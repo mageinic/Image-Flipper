@@ -25,6 +25,7 @@
 
 namespace MageINIC\ImageFlipper\ViewModel;
 
+use Magento\Catalog\Helper\Image;
 use Magento\Catalog\Model\Product;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
@@ -33,6 +34,7 @@ use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Framework\UrlInterface;
+use Magento\Catalog\Helper\ImageFactory;
 
 /**
  * Class of Configurable Flipper
@@ -64,20 +66,28 @@ class ConfigurableFlipper implements ArgumentInterface
     protected ScopeConfigInterface $scopeConfig;
 
     /**
+     * @var ImageFactory
+     */
+    private ImageFactory $imageFactory;
+
+    /**
      * Configurable Flipper Constructor
      *
      * @param SerializerInterface $serializer
      * @param StoreManagerInterface $storeManager
      * @param ScopeConfigInterface $scopeConfig
+     * @param ImageFactory $imageFactory
      */
     public function __construct(
         SerializerInterface     $serializer,
         StoreManagerInterface   $storeManager,
-        ScopeConfigInterface    $scopeConfig
+        ScopeConfigInterface    $scopeConfig,
+        ImageFactory            $imageFactory
     ) {
         $this->serializer = $serializer;
         $this->storeManager = $storeManager;
         $this->scopeConfig = $scopeConfig;
+        $this->imageFactory = $imageFactory;
     }
 
     /**
@@ -89,14 +99,12 @@ class ConfigurableFlipper implements ArgumentInterface
      */
     public function getImageFlipper(Product $product): string
     {
-        $configurableProduct = $product;
-        $children = $configurableProduct->getTypeInstance()->getUsedProducts($configurableProduct);
+        $children = $product->getTypeInstance()->getUsedProducts($product);
         $child = [];
         foreach ($children as $simpleProduct) {
             if (isset($simpleProduct['flipper_image'])) {
                 $child[$simpleProduct->getEntityId()] = [
-                    'flipper_image' => $this->getMediaPath()
-                    . 'catalog/product' . $simpleProduct['flipper_image']
+                    'flipper_image' => $this->getFlipImage($product)
                 ];
             }
         }
@@ -156,14 +164,36 @@ class ConfigurableFlipper implements ArgumentInterface
     }
 
     /**
-     * Get Media Path
+     * Get Image Flip Height Width
      *
+     * @param Product $product
      * @return string
-     * @throws NoSuchEntityException
      */
-    public function getMediaPath(): string
+    public function getFlipImage($product): string
     {
-        return $this->storeManager->getStore()
-            ->getBaseUrl(UrlInterface::URL_TYPE_MEDIA);
+        $imageId = 'catalog_flipper_image';
+        $width = $this->getImageOriginalSize($product, $imageId, $attributes = ['flipper_image'])->getWidth();
+        $height = $this->getImageOriginalSize($product, $imageId, $attributes = ['flipper_image'])->getHeight();
+        return $this->imageFactory->create()
+            ->init($product, $imageId)
+            ->constrainOnly(true)
+            ->keepAspectRatio(true)
+            ->keepTransparency(true)
+            ->keepFrame(true)
+            ->resize($width, $height)
+            ->getUrl();
+    }
+
+    /**
+     * Get Image Original Size
+     *
+     * @param Product $product
+     * @param string $imageId
+     * @param array $attributes
+     * @return Image
+     */
+    public function getImageOriginalSize($product, $imageId, array $attributes = []): Image
+    {
+        return $this->imageFactory->create()->init($product, $imageId, $attributes);
     }
 }

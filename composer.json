@@ -1,5 +1,5 @@
 {
-    "name": "mageinic/imageflipper",
+    "name": "mageinic/image-flipper",
     "description": "Image Flipper by MageINIC, Image Flipper provides effortless configuration through user-friendly settings, allowing you to choose from a variety of captivating flip effects like horizontal, vertical, and rotational flips. This extension seamlessly integrates with your store's theme, ensuring a cohesive design.",
     "require": {
         "php": "^8.0",

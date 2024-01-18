@@ -57,7 +57,7 @@ if ($product && $product->isAvailable()):
                     "jsonSwatchConfig": <?= /* @noEscape */ $block->getJsonSwatchConfig() ?>,
                     "mediaCallback": "<?= $escaper->escapeUrl($block->getMediaCallback()) ?>",
                     "jsonSwatchImageSizeConfig": <?= /* @noEscape */ $block->getJsonSwatchSizeConfig() ?>,
-                    "showTooltip": <?= $escaper->escapeJs($configurableViewModel->getShowSwatchTooltip()) ?>,
+                    "showTooltip": false,
                     "imageFlipper": <?= /* @noEscape */ $configurableFlipper->getImageFlipper($block->getProduct()) ?>,
                     "productId": <?= $escaper->escapeHtmlAttr($productId) ?>
                 }
